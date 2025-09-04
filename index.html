@@ -124,10 +124,16 @@
                 }
               );
 
-              if (!response.ok) throw new Error('Failed to save');
+              if (!response.ok) {
+                const errorData = await response.json();
+                console.error('API Error:', errorData);
+                throw new Error(`HTTP ${response.status}: ${errorData.error?.message || 'Unknown error'}`);
+              }
+              
               alert('Data saved successfully!');
             } catch (error) {
-              alert('Error saving: ' + error.message);
+              console.error('Save error:', error);
+              alert('Error saving: ' + error.message + '\n\nTip: Make sure your sheet has "Editor" permissions and your API key allows Google Sheets API access.');
             }
             setLoading(false);
           };
